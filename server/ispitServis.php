@@ -9,7 +9,7 @@ if(isset($_GET["metoda"])){
         $broker->izvrsiUpit("select * from ispit");
     }if($_GET["metoda"]=="vrati od studenta"){
         
-        $broker->izvrsiUpit("select i.*, p.ocena as 'ocena' from ispit i inner join polaganje p on (p.ispit=i.id) where p.student=".$_GET['student']);
+        $broker->izvrsiUpit("SELECT i.*, p.ocena AS 'ocena' FROM ispit i INNER JOIN polaganje p ON (p.ispit=i.id) where p.student=".$_GET['student']); // spajamo tabele *INNER JOIN*
     }
     posaljiGet($broker);
 }

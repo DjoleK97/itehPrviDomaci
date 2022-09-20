@@ -1,6 +1,6 @@
 <?php
 include "posaljiPodatke.php";
-$broker=Broker::getBroker();
+$broker=Broker::getBroker();            // Staticke metode se pozivaju kao "Klasa::statickaMetoda()"
 
 
 
@@ -8,11 +8,13 @@ if(isset($_GET["metoda"])){
    
     if($_GET["metoda"]=="vratiSve"){
         
-        $broker->izvrsiUpit("select * from student");
+        $broker->izvrsiUpit("select * from student");           // PARALELA SA JAVOM: umesto tacke . se koristi strelica -> 
     }
     posaljiGet($broker);
 }
-
+                                                                // POST i GET su superglobalne promenljive (PHP ih sam kreira)
+                                                                // POST -> ima telo zahteva
+                                                                // GET  -> Unutar nje se nalaze svi podaci koje je korisnik preneo iz URL-a, nema telo zahteva (ima ?)
 if(isset($_POST["metoda"])){
     if($_POST["metoda"]=="obrisi"){
         $broker->izvrsiUpit("delete from student where id=".$_POST["id"]);

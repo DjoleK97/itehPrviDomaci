@@ -40,16 +40,16 @@
             <label id="izabraniStudent" hidden=true></label>
             <table class="table table-hover table-dark">
                 <tr>
-                    <th scope="col">Rb</th>
-                    <th scope="col">ime</th>
-                    <th scope="col">prezime</th>
+                    <th scope="col">rb</th>
+                    <th scope="col">Ime</th>
+                    <th scope="col">Prezime</th>
                     <th scope="col">Broj indeksa</th>
                 </tr>
                 <tbody id="studenti">
+                                            <!-- ovde je tabela prazna jer je punimo u AJAXU  -->                            
+                </tbody>       
 
-                </tbody>
-
-            </table>
+            </table> 
         </div>
         <div class="col-3" hidden="true" id='polaganjaWrapper'>
 
@@ -70,8 +70,8 @@
                 </form>
             </div>
         </div>
-        <div class="col-3">
-            <h1>Kreiraj studenta</h1>
+        <div class="formaZaDodavanje">
+            <h1 id="1010">Kreiraj studenta</h1>
             <form class="mt-5">
                 <div class="form-group">
                     <input type="text" class="form-control" id="imeStudenta" placeholder="ime..." required>
@@ -99,14 +99,14 @@
                 e.preventDefault();
                 $.post("./server/studentServis.php", {
                     metoda: "dodaj",
-                    ime: $("#imeStudenta").val(),
+                    ime: $("#imeStudenta").val(),               // .val() izvlaci sta pise u inputu sa id="imeStudenta"
                     indeks: $("#brojIndeksa").val(),
                     prezime: $("#prezimeStudenta").val()
                 }, function (data) {
                     if (data !== "ok") {
                         alert(data || 'greska');
                     }
-                    napuniStudente();
+                    napuniStudente();                           // refresh
                 })
             })
             $("#dodajVezu").click(dodajVezuKlik);
@@ -119,10 +119,10 @@
                     alert(data.error);
                     return;
                 }
-                $("#studenti").html("");
-                let i = 0;
-                for (let student of data.data) {
-                    $("#studenti").append(`<tr>
+                $("#studenti").html("");                // ovom studentu isprazni HTML
+                let i = 0;                              // --- append() pravi novi red u tabeli ---
+                for (let student of data.data) {        // prodji kroz sve studente koje si dobio u nizu "data.data" i za svaku dodaj jedan red ovih studenata
+                    $("#studenti").append(`<tr class ="color-row1">         
                         <th>${++i}</th>
                         <td contentEditable=true id="${student.id}ime">${student.ime}</td>
                         <td contentEditable=true id="${student.id}prezime" >${student.prezime}</td>
@@ -137,6 +137,7 @@
 
             })
         }
+
         function izmeniStudenta(id) {
             let ime = $(`#${id}ime`).text();
             let prezime = $(`#${id}prezime`).text();
@@ -151,9 +152,10 @@
                 if (data !== "ok") {
                     alert(data || 'greska');
                 }
-                napuniStudente();
+                napuniStudente();                 // refresh
             })
         }
+
         function obrisiStudenta(id) {
             $.post("./server/studentServis.php", { metoda: "obrisi", id: id }, function (data) {
                 if (data !== "ok") {
@@ -161,9 +163,10 @@
                 }
 
                 $("#polaganjaWrapper").attr("hidden", true);
-                napuniStudente();
+                napuniStudente();                 // refresh
             })
         }
+
         function prikaziPolaganja(id) {
             $.getJSON("./server/ispitServis.php", { metoda: "vrati od studenta", student: id }, function (data) {
                 console.log(data)
@@ -183,18 +186,19 @@
                             <td>${polaganje.naziv}</td>
                             <td>${polaganje.ocena}</td>
                             <td>
-                                <button class='btn btn-danger' onClick="obrisiVezu(${id},${polaganje.id})"> Obrisi</button>
+                                <button class='btn btn-danger' onClick="obrisiVezu(${id},${polaganje.id})"> Obrisi</button> 
                             </td>
                         </tr>
                     `);
                 }
                 $("#izabraniStudent").val(id);
-                napunikomboSaPolaganjima();
+                napunikomboSaPolaganjima();                 // refresh
 
             })
         }
+
         function napunikomboSaPolaganjima() {
-            $.getJSON("./server/ispitServis.php", { metoda: "vrati sve" }, function (data) {
+            $.getJSON("./server/ispitServis.php", { metoda: "vrati sve" }, function (data) { // PRIMENA AJAXA (kad server vrati odgovor od "./ispitServis.php", tad izvrsi f-ju)
                 console.log(data);
                 if (data.status !== "ok") {
                     alert(data.error);
@@ -207,6 +211,7 @@
                 }
             })
         }
+
         function dodajVezuKlik(e) {
             e.preventDefault();
             $.post("./server/studentServis.php", {
@@ -214,11 +219,11 @@
                 student: $("#izabraniStudent").val(),
                 ispit: $("#komboSaPolaganjima").val(),
                 ocena: $("#ocena").val()
-            }, function (data) {
+            }, function (data) {                                    // posto je ovde $.post --> ovo (data) ce biti string
                 if (data !== "ok") {
                     alert(data || 'greska');
                 }
-                prikaziPolaganja($("#izabraniStudent").val());
+                prikaziPolaganja($("#izabraniStudent").val());                 // refresh
             })
         }
         function obrisiVezu(student, ispit) {
@@ -230,7 +235,7 @@
                 if (data !== "ok") {
                     alert(data || 'greska');
                 }
-                prikaziPolaganja($("#izabraniStudent").val());
+                prikaziPolaganja($("#izabraniStudent").val());                 // refresh
             })
         }
     </script>

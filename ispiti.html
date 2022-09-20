@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"              
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> <!-- implementiramo bootstrap  -->
     <title>Ispiti</title>
 </head>
 
@@ -65,36 +65,38 @@
     </div>
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> <!-- implementiramo ajax  -->
+   
+    <!-- JavaScript kod -->
+   <script> 
+        $(document).ready(function () {                         //Kada se ucitao sav HTML onda radi funkciju
             napuniTabelu();
-            $("#krerajIspit").click(function (e) {
-                e.preventDefault();
+            $("#krerajIspit").click(function (e) {              // PRIMENA AJAXA 
+                e.preventDefault();                             // npr. nece se refreshovati stranica (tj. nece se poslati get zahtev koji se salje po default-u preko html-a)
                 $.post("./server/ispitServis.php", {
                     metoda: "dodaj",
-                    naziv: $("#naziv").val(),
+                    naziv: $("#naziv").val(),                   // .val() izvlaci sta pise u inputu sa id="naziv"
                     semestar: $("#semestar").val()
                 }, function (data) {
                     if (data != 'ok')
                         alert(data);
-                    napuniTabelu();
+                    napuniTabelu();                             // refresh tabele
 
                 })
             })
         });
 
         function napuniTabelu() {
-            $.getJSON("./server/ispitServis.php", { metoda: "vrati sve" }, function (data) {
-
+            $.getJSON("./server/ispitServis.php", { metoda: "vrati sve" }, function (data) {        // PRIMENA AJAXA (kad server vrati odgovor od "./ispitServis.php", tad izvrsi f-ju)
+                                                                                                    // "data" je objekat koji ce server vratiti
                 if (data.status !== "ok") {
                     alert(data.error);
                     return;
                 }
-                let i = 0;
-                $("#ispiti_podaci").html("");
+                let i = 0;                                                                          // #ispiti_podaci (jQUERY)=> uzmi HTML element sa id ="ispiti_podaci"  (# je ID)
+                $("#ispiti_podaci").html("");                                                       // append() pravi novi red u tabeli 
                 for (let ispit of data.data) {
-                    $("#ispiti_podaci").append(`<tr>
+                    $("#ispiti_podaci").append(`<tr>                                            
                         <th scope="row">${++i}.</th>
                     <td contentEditable=true id="${ispit.id}Naziv" >${ispit.naziv} </td>
                     <td contentEditable=true id="${ispit.id}Semestar" >${ispit.semestar} </td>
@@ -112,7 +114,7 @@
             $.post("./server/ispitServis.php", { metoda: "obrisi", id: id }, function (data) {
                 if (data != 'ok')
                     alert(data);
-                napuniTabelu();
+                napuniTabelu();                 // refresh
             })
         }
 
@@ -128,7 +130,7 @@
             }, function (data) {
                 if (data != 'ok')
                     alert(data);
-                napuniTabelu();
+                napuniTabelu();                 // refresh
             })
         }
     </script>
